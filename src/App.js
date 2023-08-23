@@ -1,17 +1,18 @@
 import { useEffect, useReducer } from "react";
-import DateCounter from "./DateCounter";
-import Header from "./Header";
-import Main from "./Main";
-import Loader from "./Loader";
-import Error from "./Error";
-import StartScreen from "./StartScreen";
-import Question from "./Question";
+import DateCounter from "./components/DateCounter";
+import Header from "./components/Header";
+import Main from "./components/Main";
+import Loader from "./components/Loader";
+import Error from "./components/Error";
+import StartScreen from "./components/StartScreen";
+import Question from "./components/Question";
 
 const initialState = {
   questions: [],
   // loading, error, active, ready,  finished
   status: "loading",
   currentQuestionIdx: 0,
+  answer: null,
 };
 
 function reducer(state, action) {
@@ -28,6 +29,8 @@ function reducer(state, action) {
         ...state,
         status: "active",
       };
+    case "newAnswer":
+      return { ...state, answer: action.payload };
     default:
       throw new Error("Action unknown");
   }
@@ -35,7 +38,7 @@ function reducer(state, action) {
 
 export default function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { questions, status } = state;
+  const { questions, status, currentQuestionIdx, answer } = state;
   const numQuestions = questions.length;
 
   useEffect(() => {
@@ -54,7 +57,13 @@ export default function App() {
         {status === "ready" && (
           <StartScreen dispatch={dispatch} numQuestions={numQuestions} />
         )}
-        {status === "active" && <Question />}
+        {status === "active" && (
+          <Question
+            dispatch={dispatch}
+            question={questions[currentQuestionIdx]}
+            answer={answer}
+          />
+        )}
       </Main>
     </div>
   );
