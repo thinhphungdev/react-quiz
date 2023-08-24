@@ -1,6 +1,6 @@
 import Options from "./Options";
 function Question(props) {
-  const { question, correctOption, points, options } = props.question;
+  const { question, correctOption, options } = props.question;
   return (
     <div>
       <h4>{question}</h4>
